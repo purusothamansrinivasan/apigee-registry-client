@@ -1,0 +1,124 @@
+/**
+ * MCP Server function for TagApiDeploymentRevision adds a tag to a specified revision of a
+ deployment.
+ */
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
+import java.util.function.Function;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+class Post_V1_Projects_Project_Locations_Location_Apis_Api_Deployments_Deployment_Tag_RevisionMCPTool {
+    
+    public static Function<MCPServer.MCPRequest, MCPServer.MCPToolResult> getPost_V1_Projects_Project_Locations_Location_Apis_Api_Deployments_Deployment_Tag_RevisionHandler(MCPServer.APIConfig config) {
+        return (request) -> {
+            try {
+                Map<String, Object> args = request.getArguments();
+                if (args == null) {
+                    return new MCPServer.MCPToolResult("Invalid arguments object", true);
+                }
+                
+                List<String> queryParams = new ArrayList<>();
+        if (args.containsKey("project")) {
+            queryParams.add("project=" + args.get("project"));
+        }
+        if (args.containsKey("location")) {
+            queryParams.add("location=" + args.get("location"));
+        }
+        if (args.containsKey("api")) {
+            queryParams.add("api=" + args.get("api"));
+        }
+        if (args.containsKey("deployment")) {
+            queryParams.add("deployment=" + args.get("deployment"));
+        }
+        if (args.containsKey("name")) {
+            queryParams.add("name=" + args.get("name"));
+        }
+        if (args.containsKey("tag")) {
+            queryParams.add("tag=" + args.get("tag"));
+        }
+                
+                String queryString = queryParams.isEmpty() ? "" : "?" + String.join("&", queryParams);
+                String url = config.getBaseUrl() + "/api/v2/post_v1_projects_project_locations_location_apis_api_deployments_deployment_tag_revision" + queryString;
+                
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Bearer " + config.getApiKey())
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+                
+                HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                
+                if (response.statusCode() >= 400) {
+                    return new MCPServer.MCPToolResult("API error: " + response.body(), true);
+                }
+                
+                // Pretty print JSON
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode jsonNode = mapper.readTree(response.body());
+                String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
+                
+                return new MCPServer.MCPToolResult(prettyJson);
+                
+            } catch (IOException | InterruptedException e) {
+                return new MCPServer.MCPToolResult("Request failed: " + e.getMessage(), true);
+            } catch (Exception e) {
+                return new MCPServer.MCPToolResult("Unexpected error: " + e.getMessage(), true);
+            }
+        };
+    }
+    
+    public static MCPServer.Tool createPost_V1_Projects_Project_Locations_Location_Apis_Api_Deployments_Deployment_Tag_RevisionTool(MCPServer.APIConfig config) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("type", "object");
+        Map<String, Object> properties = new HashMap<>();
+        Map<String, Object> projectProperty = new HashMap<>();
+        projectProperty.put("type", "string");
+        projectProperty.put("required", true);
+        projectProperty.put("description", "The project id.");
+        properties.put("project", projectProperty);
+        Map<String, Object> locationProperty = new HashMap<>();
+        locationProperty.put("type", "string");
+        locationProperty.put("required", true);
+        locationProperty.put("description", "The location id.");
+        properties.put("location", locationProperty);
+        Map<String, Object> apiProperty = new HashMap<>();
+        apiProperty.put("type", "string");
+        apiProperty.put("required", true);
+        apiProperty.put("description", "The api id.");
+        properties.put("api", apiProperty);
+        Map<String, Object> deploymentProperty = new HashMap<>();
+        deploymentProperty.put("type", "string");
+        deploymentProperty.put("required", true);
+        deploymentProperty.put("description", "The deployment id.");
+        properties.put("deployment", deploymentProperty);
+        Map<String, Object> nameProperty = new HashMap<>();
+        nameProperty.put("type", "string");
+        nameProperty.put("required", true);
+        nameProperty.put("description", "Input parameter: Required. The name of the deployment to be tagged, including the revision ID.");
+        properties.put("name", nameProperty);
+        Map<String, Object> tagProperty = new HashMap<>();
+        tagProperty.put("type", "string");
+        tagProperty.put("required", true);
+        tagProperty.put("description", "Input parameter: Required. The tag to apply. The tag should be at most 40 characters, and match `[a-z][a-z0-9-]{3,39}`.");
+        properties.put("tag", tagProperty);
+        parameters.put("properties", properties);
+        
+        MCPServer.ToolDefinition definition = new MCPServer.ToolDefinition(
+            "post_v1_projects_project_locations_location_apis_api_deployments_deployment_tag_revision",
+            "TagApiDeploymentRevision adds a tag to a specified revision of a
+ deployment.",
+            parameters
+        );
+        
+        return new MCPServer.Tool(definition, getPost_V1_Projects_Project_Locations_Location_Apis_Api_Deployments_Deployment_Tag_RevisionHandler(config));
+    }
+    
+}
